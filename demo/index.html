@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="darkreader-lock" />
+  <title>B-RAD · Interactive Demo</title>
+  <link rel="icon" type="image/svg+xml" href="../static/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../static/images/favicon-180.png">
+  <meta name="theme-color" content="#0e5e7a">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --line: #d8e0eb;
+      --text: #1e293b;
+      --muted: #64748b;
+      --blue: #2563eb;
+      --blue-soft: #eaf2ff;
+      --green: #059669;
+      --red: #dc2626;
+      --orange: #f59e0b;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top left, #ffffff 0, #f5f8ff 35%, #eef4fb 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+    }
+
+    .stage {
+      width: min(86vw, 1296px);
+      aspect-ratio: 16 / 10;
+      background: var(--bg);
+      border: 1px solid #e2e8f0;
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      grid-template-rows: 1fr auto;
+      user-select: none;
+    }
+
+    .sidebar {
+      padding: 34px 24px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand .eyebrow {
+      color: var(--blue);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      align-items: center;
+      gap: 12px;
+      opacity: 0.5;
+      transition: 260ms ease;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      width: 2px;
+      height: 28px;
+      background: #cbd5e1;
+    }
+
+    .step:last-child::before {
+      display: none;
+    }
+
+    .dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #eef2f7;
+      color: #64748b;
+      border: 2px solid #cbd5e1;
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 1;
+    }
+
+    .step-label {
+      font-size: 14px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .step small {
+      display: block;
+      margin-top: 3px;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .step.done,
+    .step.active {
+      opacity: 1;
+    }
+
+    .step.done .dot {
+      background: #e0f2fe;
+      border-color: #60a5fa;
+      color: var(--blue);
+    }
+
+    .step.done .dot::after {
+      content: "✓";
+    }
+
+    .step.done .dot span {
+      display: none;
+    }
+
+    .step.active .dot {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+      box-shadow: 0 0 0 7px rgba(37, 99, 235, 0.11);
+    }
+
+    .step.active .step-label {
+      color: var(--blue);
+    }
+
+    .main {
+      position: relative;
+      padding: 22px 24px 16px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 58px;
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .pill,
+    .meta {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 14px;
+    }
+
+    .pill strong {
+      color: var(--blue);
+      margin-right: 20px;
+    }
+
+    .meta {
+      justify-content: space-around;
+      color: #475569;
+    }
+
+    .ui-grid {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      grid-template-rows: 210px 1fr;
+      gap: 14px;
+      height: calc(100% - 72px);
+    }
+
+    .card {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+      transition: opacity 260ms ease, filter 260ms ease, box-shadow 260ms ease, transform 260ms ease;
+    }
+
+    .card-title {
+      color: #475569;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin: 11px 18px 7px;
+    }
+
+    .input-card {
+      grid-column: 1 / 3;
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 14px;
+      padding: 0;
+    }
+
+    .input-image-card,
+    .input-text-card {
+      position: relative;
+      padding-bottom: 10px;
+      transition: opacity 260ms ease, filter 260ms ease, box-shadow 260ms ease, outline 180ms ease;
+    }
+
+    .image-box {
+      width: 168px;
+      margin: 0 auto 10px;
+      height: 168px;
+      border-radius: 10px;
+      background: #111827;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .image-slot {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #111827;
+    }
+
+    .slot-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      position: relative;
+      z-index: 2;
+    }
+
+    .image-box .slot-img,
+    .ref-image .slot-img,
+    .pred-img .slot-img {
+      object-fit: contain;
+    }
+
+    .slot-img.is-missing {
+      display: none;
+    }
+
+    /* hide fallback pattern when real image is loaded */
+    .image-slot.img-loaded .fallback-ultrasound {
+      display: none;
+    }
+
+
+    .fallback-ultrasound {
+      position: absolute !important;
+      inset: 0;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 1;
+    }
+
+    .asset-hint {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      z-index: 4;
+      padding: 4px 7px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.72);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    body.show-asset-hints .asset-hint {
+      opacity: 1;
+    }
+
+    .ultrasound {
+      width: 70%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse at 50% 38%, rgba(0, 0, 0, 0.78) 0 13%, rgba(100, 100, 100, 0.6) 15%, transparent 24%),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.09) 0 2px, rgba(0, 0, 0, 0.08) 3px 6px),
+        linear-gradient(90deg, #4d4d4d 0%, #a8a8a8 45%, #5c5c5c 100%);
+      filter: contrast(1.12) grayscale(1);
+      position: relative;
+    }
+
+    .ultrasound::after {
+      content: "OSE MAMA ESQUERDA";
+      position: absolute;
+      bottom: 38px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 9px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .text-box {
+      margin: 0 18px 10px;
+      min-height: 168px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 15px;
+      line-height: 1.34;
+      background: #fbfdff;
+    }
+
+    mark {
+      color: #1d4ed8;
+      background: rgba(37, 99, 235, 0.16);
+      border-radius: 4px;
+      padding: 0 3px;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      margin-left: 2px;
+      color: var(--blue);
+      font-weight: 800;
+      animation: blink 850ms steps(1) infinite;
+    }
+
+    .typing-cursor.is-hidden {
+      display: none;
+    }
+
+    @keyframes blink {
+      0%, 45% { opacity: 1; }
+      46%, 100% { opacity: 0; }
+    }
+
+    .reference-card {
+      display: block;
+    }
+
+    .reference-card .card-title {
+      margin: 8px 18px 5px;
+      font-size: 11px;
+    }
+
+    .reference-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 1;
+      transition: opacity 400ms ease, transform 400ms ease;
+    }
+
+    .reference-content.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+    }
+
+    .reference-content > div:first-child,
+    .reference-content > div:last-child {
+      flex: 0 0 auto;
+    }
+
+    /* report section stays compact so probability rows remain visible */
+    .reference-content > div:nth-child(2) {
+      flex: 0 0 auto;
+      min-height: 0;
+      overflow: visible;
+    }
+
+    .ref-top {
+      display: grid;
+      grid-template-columns: 1fr 82px;
+      gap: 8px;
+      padding: 0 18px 4px;
+    }
+
+    .ref-image {
+      width: 76px;
+      height: 76px;
+      justify-self: center;
+      border-radius: 8px;
+      background: #111827;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .ref-info {
+      padding-top: 2px;
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.12;
+    }
+
+    .ref-info strong {
+      display: block;
+      color: #0f172a;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .diagnosis {
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 2px 0 5px;
+    }
+
+    .sim-box {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 4px;
+      color: var(--blue);
+      font-weight: 800;
+      font-size: 9px;
+      line-height: 1.15;
+    }
+
+    .report-box {
+      margin: 0 14px 6px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 10px;
+      line-height: 1.16;
+      background: #fbfdff;
+      overflow: visible;
+    }
+
+    .prob-box {
+      margin: 0 14px 6px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3px 8px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 32px;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bar {
+      height: 5px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: #94a3b8;
+      transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .fill.green {
+      background: var(--green);
+    }
+
+    .fill.red {
+      background: var(--red);
+    }
+
+    .fill.orange {
+      background: var(--orange);
+    }
+
+    .predictions-card {
+      padding: 0 18px 18px;
+    }
+
+    .localization-content {
+      opacity: 1;
+      transition: opacity 400ms ease, transform 400ms ease;
+    }
+
+    .localization-content.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+    }
+
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      height: calc(100% - 30px);
+      min-height: 0;
+    }
+
+    .pred-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 5px;
+      background: #fff;
+      overflow: hidden;
+      min-height: 0;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 360ms ease, transform 360ms ease, border-color 260ms ease, background 260ms ease, box-shadow 260ms ease, outline 180ms ease;
+    }
+
+    .pred-card.is-hidden {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .pred-card.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pred-card.selected {
+      border: 3px solid var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .pred-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+      background: #111827;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      margin: 0 auto 4px;
+      position: relative;
+    }
+
+    .bbox {
+      position: absolute;
+      left: var(--x, 35%);
+      top: var(--y, 28%);
+      width: var(--w, 36%);
+      height: var(--h, 30%);
+      border: 3px solid #22c55e;
+      border-radius: 2px;
+      z-index: 2;
+    }
+
+    .mask {
+      position: absolute;
+      left: var(--x, 39%);
+      top: var(--y, 34%);
+      width: var(--w, 27%);
+      height: var(--h, 18%);
+      background: rgba(220, 38, 38, 0.64);
+      border-radius: 48% 44% 42% 50%;
+      transform: rotate(-5deg);
+      z-index: 3;
+    }
+
+    .anim-bbox,
+    .anim-mask {
+      opacity: 0;
+    }
+
+    .anim-bbox {
+      transform-origin: center;
+    }
+
+    .anim-bbox.is-visible {
+      opacity: 1;
+      animation: bboxDraw 700ms ease-out both;
+    }
+
+    .anim-mask {
+      transform: scale(0.7) rotate(-5deg);
+      transform-origin: center;
+    }
+
+    .anim-mask.is-visible {
+      animation: maskPop 650ms ease-out both;
+    }
+
+    @keyframes bboxDraw {
+      0% {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+      55% {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes maskPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.65) rotate(-5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(-5deg);
+      }
+    }
+
+    /* pred-img layers: input image underneath, prediction fades in on top */
+    .pred-base-img {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      background: #111827;
+      display: grid;
+      place-items: center;
+    }
+
+    .pred-base-img .slot-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .image-slot.pred-reveal {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 900ms ease;
+      z-index: 2;
+    }
+
+    .image-slot.pred-reveal.is-revealed {
+      opacity: 1;
+    }
+
+    .pred-title {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .birads {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .birads.red {
+      color: var(--red);
+    }
+
+    .type {
+      font-size: 9px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    .conf {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.5px;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+
+    .conf strong {
+      color: #0f172a;
+    }
+
+    .sim-small {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 2px 5px;
+      color: #64748b;
+      font-size: 8px;
+      line-height: 1.05;
+    }
+
+    .reference-loading,
+    .localization-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      display: none;
+    }
+
+    .reference-loading.is-visible,
+    .localization-loading.is-visible {
+      display: block;
+    }
+
+    .loader-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 18px;
+    }
+
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: #e2e8f0;
+      border-radius: 10px;
+    }
+
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+      animation: shimmer 1.25s infinite;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .skeleton-image {
+      height: 120px;
+      margin-bottom: 14px;
+    }
+
+    .skeleton-line {
+      height: 16px;
+      margin-bottom: 10px;
+    }
+
+    .skeleton-line.short {
+      width: 58%;
+    }
+
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      height: calc(100% - 42px);
+      min-height: 0;
+    }
+
+    .pred-skeleton {
+      height: 100%;
+      min-height: 0;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(#d7dfeb, #d7dfeb) center 8px / 44px 44px no-repeat,
+        linear-gradient(#e5ebf3, #e5ebf3) 12px calc(100% - 30px) / 72px 8px no-repeat,
+        linear-gradient(#edf2f7, #edf2f7) calc(100% - 52px) calc(100% - 30px) / 40px 8px no-repeat,
+        linear-gradient(#eef3f8, #eef3f8) 12px calc(100% - 14px) / calc(100% - 24px) 12px no-repeat,
+        #ffffff;
+    }
+
+    .reveal-item {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 350ms ease, transform 350ms ease;
+    }
+
+    .reveal-item.is-hidden {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .caption {
+      grid-column: 1 / -1;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.93);
+      color: white;
+      padding: 17px 48px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .caption-result {
+      color: #4ade80;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .controls {
+      position: absolute;
+      right: 20px;
+      bottom: 22px;
+      display: none;
+      gap: 8px;
+      z-index: 30;
+    }
+
+    body.dev-controls .controls {
+      display: flex;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 14px;
+      background: white;
+      color: #334155;
+      font-weight: 800;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.16);
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #eff6ff;
+      color: var(--blue);
+    }
+
+    .stage.step-input-image .input-text-card,
+    .stage.step-input-image .reference-card,
+    .stage.step-input-image .predictions-card,
+    .stage.step-input-text .input-image-card,
+    .stage.step-input-text .reference-card,
+    .stage.step-input-text .predictions-card,
+    .stage.step-retrieve .input-card,
+    .stage.step-retrieve .predictions-card,
+    .stage.step-localize .input-card,
+    .stage.step-localize .reference-card,
+    .stage.step-segment .input-text-card,
+    .stage.step-segment .reference-card,
+    .stage.step-diagnose .input-card,
+    .stage.step-diagnose .predictions-card {
+      opacity: 0.18;
+      filter: grayscale(0.25);
+    }
+
+    .stage.step-input-image .input-image-card,
+    .stage.step-input-text .input-text-card,
+    .stage.step-retrieve .reference-card,
+    .stage.step-localize .predictions-card,
+    .stage.step-segment .pred-card.selected,
+    .stage.step-diagnose .reference-card,
+    .stage.step-final .card {
+      opacity: 1 !important;
+      filter: none !important;
+    }
+
+    .stage.step-input-image .input-image-card,
+    .stage.step-input-text .input-text-card,
+    .stage.step-retrieve .reference-card,
+    .stage.step-localize .predictions-card,
+    .stage.step-diagnose .reference-card {
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.95), 0 0 0 10px rgba(37, 99, 235, 0.14), 0 4px 16px rgba(15, 23, 42, 0.05);
+      z-index: 10;
+    }
+
+    .stage.step-segment .pred-card.selected {
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.38), 0 0 0 10px rgba(220, 38, 38, 0.1);
+      z-index: 10;
+    }
+
+    .stage.step-final .sidebar .step {
+      opacity: 1;
+    }
+
+    [data-click-target] {
+      cursor: default;
+    }
+
+    .stage.step-input-image [data-click-target="input-image"],
+    .stage.step-input-text [data-click-target="input-text"],
+    .stage.step-retrieve [data-click-target="reference"],
+    .stage.step-localize [data-click-target="localization"],
+    .stage.step-segment [data-click-target="selected-roi"],
+    .stage.step-diagnose [data-click-target="probability"],
+    .stage.step-final {
+      cursor: pointer;
+    }
+
+    .stage.step-input-image [data-click-target="input-image"]:hover,
+    .stage.step-input-text [data-click-target="input-text"]:hover,
+    .stage.step-retrieve [data-click-target="reference"]:hover,
+    .stage.step-localize [data-click-target="localization"]:hover,
+    .stage.step-segment [data-click-target="selected-roi"]:hover,
+    .stage.step-diagnose [data-click-target="probability"]:hover {
+      outline: 3px solid rgba(37, 99, 235, 0.32);
+      outline-offset: 4px;
+    }
+
+    .click-pulse {
+      animation: clickPulse 480ms ease-out;
+    }
+
+    @keyframes clickPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.0);
+      }
+      40% {
+        box-shadow: 0 0 0 7px rgba(37, 99, 235, 0.22);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.0);
+      }
+    }
+
+    .help {
+      position: absolute;
+      right: 24px;
+      top: 92px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.96);
+      color: #334155;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+      font-size: 12px;
+      line-height: 1.45;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: 180ms ease;
+    }
+
+    body.show-help .help {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1100px) {
+      .stage {
+        grid-template-columns: 210px 1fr;
+      }
+      .sidebar {
+        padding: 24px 18px;
+      }
+      .brand h1 {
+        font-size: 24px;
+      }
+      .main {
+        padding: 16px 16px 76px;
+      }
+      .caption {
+        font-size: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+
+    /* ---- dark theme: brighter, visible highlights ---- */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f151b; --panel: #18212a; --line: #2c3946; --text: #e5edf5; --muted: #94a3b8;
+        --blue: #60a5fa; --blue-soft: rgba(96, 165, 250, 0.16);
+        --green: #34d399; --red: #f87171; --orange: #fbbf24;
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+      }
+      body { background: #0b1015; }
+      body.embed { background: transparent; }
+      .stage { border-color: #24303b; }
+      .sidebar { background: linear-gradient(180deg, #151d25 0%, #121a21 100%); }
+      .step::before { background: #334252; }
+      .dot { background: #1c2631; color: #94a3b8; border-color: #3a4a5b; }
+      .step.done .dot { background: rgba(96, 165, 250, 0.18); border-color: #60a5fa; color: #93c5fd; }
+      .step.active .dot { color: #0b1015; box-shadow: 0 0 0 7px rgba(96, 165, 250, 0.22); }
+      .meta, .card-title, .ref-info, .type { color: #a8b6c5; }
+      .ref-info strong, .conf strong { color: #f1f5f9; }
+      .conf { color: #94a3b8; }
+      .text-box, .report-box { background: #121a22; }
+      mark { color: #eff6ff; background: rgba(96, 165, 250, 0.45); box-shadow: inset 0 -2px 0 #93c5fd; }
+      .sim-box { background: rgba(96, 165, 250, 0.14); color: #93c5fd; }
+      .sim-small { background: #202b36; color: #a8b6c5; }
+      .bar { background: #2a3642; }
+      .fill { background: #8a9bb0; }
+      .pred-card { background: #1b252f; }
+      .pred-card.selected { border-color: #60a5fa; background: rgba(96, 165, 250, 0.16); }
+      .reference-loading, .localization-loading { background: rgba(24, 33, 42, 0.97); }
+      .skeleton { background: #26323e; }
+      .skeleton::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent); }
+      .pred-skeleton {
+        background:
+          linear-gradient(#2c3946, #2c3946) center 8px / 44px 44px no-repeat,
+          linear-gradient(#26323e, #26323e) 12px calc(100% - 30px) / 72px 8px no-repeat,
+          linear-gradient(#26323e, #26323e) calc(100% - 52px) calc(100% - 30px) / 40px 8px no-repeat,
+          linear-gradient(#222d38, #222d38) 12px calc(100% - 14px) / calc(100% - 24px) 12px no-repeat,
+          #1b252f;
+      }
+      .caption { background: rgba(6, 10, 14, 0.94); border-top: 1px solid #24303b; }
+      .help { background: rgba(24, 33, 42, 0.97); color: #cbd5e1; }
+      button { color: #cbd5e1; background: #1b252f; }
+      button:hover { background: rgba(96, 165, 250, 0.16); }
+
+      /* dimmed (inactive) panels stay legible on dark */
+      .stage.step-input-image .input-text-card, .stage.step-input-image .reference-card, .stage.step-input-image .predictions-card,
+      .stage.step-input-text .input-image-card, .stage.step-input-text .reference-card, .stage.step-input-text .predictions-card,
+      .stage.step-retrieve .input-card, .stage.step-retrieve .predictions-card,
+      .stage.step-localize .input-card, .stage.step-localize .reference-card,
+      .stage.step-segment .input-text-card, .stage.step-segment .reference-card,
+      .stage.step-diagnose .input-card, .stage.step-diagnose .predictions-card { opacity: 0.32; }
+
+      /* active-panel ring */
+      .stage.step-input-image .input-image-card, .stage.step-input-text .input-text-card,
+      .stage.step-retrieve .reference-card, .stage.step-localize .predictions-card,
+      .stage.step-diagnose .reference-card {
+        box-shadow: 0 0 0 3px #60a5fa, 0 0 0 9px rgba(96, 165, 250, 0.22), 0 6px 22px rgba(0, 0, 0, 0.5);
+      }
+      .stage.step-segment .pred-card.selected { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.75), 0 0 0 9px rgba(248, 113, 113, 0.16); }
+    }
+
+    .pill strong, .pill span { white-space: nowrap; }
+    .topbar { grid-template-columns: 230px 1fr; }
+    .pill { justify-content: center; }
+    .pill strong { margin-right: 10px; }
+
+    /* ---- hide outputs of steps that have not run yet (no spoilers in dimmed panels) ---- */
+    .stage.step-input-image .reference-content,
+    .stage.step-input-text .reference-content,
+    .stage.step-input-image .localization-content,
+    .stage.step-input-text .localization-content,
+    .stage.step-retrieve .localization-content,
+    .stage.step-retrieve .reference-content > div:last-child,
+    .stage.step-localize .reference-content > div:last-child,
+    .stage.step-segment .reference-content > div:last-child {
+      visibility: hidden;
+      opacity: 0 !important;
+    }
+
+    .ph { font-style: normal; color: var(--muted); padding: 0 2px; }
+
+    /* ---- embed mode (project page iframe) ---- */
+    body.embed { display: block; min-height: 0; background: transparent; overflow: hidden; }
+    body.embed .stage { width: 1296px; box-shadow: none; }
+  </style>
+</head>
+<body>
+  <div class="stage step-input-image" id="stage">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Workflow</h1>
+        <p>BI-RADS-aware retrieval-augmented diagnosis</p>
+      </div>
+
+      <div class="steps" id="steps">
+        <div class="step active" data-step="0">
+          <div class="dot"><span>1</span></div>
+          <div class="step-label">Input case<small>image + text</small></div>
+        </div>
+        <div class="step" data-step="1">
+          <div class="dot"><span>2</span></div>
+          <div class="step-label">Retrieve references<small>similar prior cases</small></div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="dot"><span>3</span></div>
+          <div class="step-label">Localize lesion<small>reference-guided</small></div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="dot"><span>4</span></div>
+          <div class="step-label">Segment ROI<small>lesion boundary</small></div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="dot"><span>5</span></div>
+          <div class="step-label">Predict BI-RADS<small>with evidence</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="pill"><strong>Patient ID</strong> <span>(Age)</span></div>
+        <div class="meta">
+          <span>YYYY-MM-DD&nbsp;&nbsp;hh:mm</span>
+          <span>|</span>
+          <span>Depth: <i class="ph">–</i> cm</span>
+          <span>|</span>
+          <span>FOV: <i class="ph">–</i> cm</span>
+          <span>|</span>
+          <span>Freq: <i class="ph">–</i> MHz</span>
+          <span>|</span>
+          <span>Gain: <i class="ph">–</i></span>
+        </div>
+      </div>
+
+      <section class="ui-grid">
+        <div class="card input-card">
+          <div class="input-image-card" data-click-target="input-image">
+            <div class="card-title">Input image</div>
+            <div class="image-box">
+              <!-- Replace image file at: ./assets/brad/input_case.png -->
+              <div class="image-slot" data-slot="input-case">
+                <img
+                  class="slot-img"
+                  src="./assets/brad/input_case.png"
+                  alt="Input breast ultrasound image"
+                  onerror="this.classList.add('is-missing')"
+                />
+                <div class="ultrasound fallback-ultrasound"></div>
+                <div class="asset-hint">./assets/brad/input_case.png</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-text-card" data-click-target="input-text">
+            <div class="card-title">Input clinical text</div>
+            <div class="text-box">
+              <span id="clinicalText"></span><span class="typing-cursor" id="clinicalCursor">|</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card reference-card" id="referenceCard" data-click-target="reference">
+          <div class="reference-loading" id="referenceLoading">
+            <div class="loader-title">Retrieving similar cases...</div>
+            <div class="skeleton skeleton-image"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line short"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line short"></div>
+          </div>
+
+          <div class="reference-content" id="referenceContent">
+            <div>
+              <div class="card-title">Reference image</div>
+              <div class="ref-top">
+                <div class="ref-image reveal-item">
+                  <!-- Replace image file at: ./assets/brad/reference_8492.png -->
+                  <div class="image-slot" data-slot="reference">
+                    <img
+                      class="slot-img"
+                      src="./assets/brad/reference_8492.png"
+                      alt="Retrieved reference ultrasound image"
+                      onerror="this.classList.add('is-missing')"
+                    />
+                    <div class="ultrasound fallback-ultrasound"></div>
+                    <div class="asset-hint">./assets/brad/reference_8492.png</div>
+                  </div>
+                </div>
+                <div class="ref-info reveal-item">
+                  Ref ID
+                  <strong><span class="ph">–</span></strong>
+                  Age<br />
+                  <strong><span class="ph">–</span></strong>
+                  Diagnosis
+                  <div class="diagnosis">Benign</div>
+                  <div class="sim-box">Similarity<br />Img 93.68%<br />Txt 100.00%</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card-title">Reference report</div>
+              <div class="report-box reveal-item">
+                Ultrasonography shows an <mark>oval shaped</mark>, <mark>parallel oriented</mark>, <mark>circumscribed isoechoic mass</mark>, <mark>no posterior feature</mark>.
+              </div>
+            </div>
+
+            <div>
+              <div class="card-title">Prediction probability</div>
+              <div class="prob-box reveal-item" data-click-target="probability">
+                <div class="bar-row"><span>BI-RADS 2</span><div class="bar"><div class="fill" data-target="32.6" style="width: 0%"></div></div><span class="percent" data-target="32.6">0.0%</span></div>
+                <div class="bar-row"><span>BI-RADS 3</span><div class="bar"><div class="fill green" data-target="55.7" style="width: 0%"></div></div><span class="percent" data-target="55.7">0.0%</span></div>
+                <div class="bar-row"><span>BI-RADS 4</span><div class="bar"><div class="fill red" data-target="7.8" style="width: 0%"></div></div><span class="percent" data-target="7.8">0.0%</span></div>
+                <div class="bar-row"><span>BI-RADS 5</span><div class="bar"><div class="fill orange" data-target="3.8" style="width: 0%"></div></div><span class="percent" data-target="3.8">0.0%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card predictions-card" id="predictionsCard" data-click-target="localization">
+          <div class="localization-loading" id="localizationLoading">
+            <div class="loader-title">Running reference-guided localization...</div>
+            <div class="prediction-grid skeleton-grid">
+              <div class="skeleton pred-skeleton"></div>
+              <div class="skeleton pred-skeleton"></div>
+              <div class="skeleton pred-skeleton"></div>
+              <div class="skeleton pred-skeleton"></div>
+            </div>
+          </div>
+
+          <div class="localization-content" id="localizationContent">
+            <div class="card-title">Localizations and predictions</div>
+            <div class="prediction-grid">
+              <div class="pred-card selected" data-card-index="0" data-click-target="selected-roi">
+                <div class="pred-img">
+                  <div class="pred-base-img">
+                    <img class="slot-img" src="./assets/brad/input_case.png" alt="Input image" onerror="this.classList.add('is-missing')" />
+                  </div>
+                  <!-- Replace image file at: ./assets/brad/localization_candidate_01.png -->
+                  <div class="image-slot pred-reveal" data-slot="candidate-01">
+                    <img
+                      class="slot-img"
+                      src="./assets/brad/localization_candidate_01.png"
+                      alt="Localization candidate 1"
+                      onerror="this.classList.add('is-missing')"
+                    />
+                    <div class="ultrasound fallback-ultrasound"></div>
+                    <div class="asset-hint">./assets/brad/localization_candidate_01.png</div>
+                  </div>
+                </div>
+                <div class="pred-title"><span class="birads">BI-RADS 3</span><span class="type">Benign</span></div>
+                <div class="conf"><span>Pred Conf:</span><strong>55.7%</strong></div>
+                <div class="sim-small">Img Sim 93.68%<br />Txt Sim 100.00%</div>
+              </div>
+
+              <div class="pred-card" data-card-index="1">
+                <div class="pred-img">
+                  <div class="pred-base-img">
+                    <img class="slot-img" src="./assets/brad/input_case.png" alt="Input image" onerror="this.classList.add('is-missing')" />
+                  </div>
+                  <!-- Replace image file at: ./assets/brad/localization_candidate_02.png -->
+                  <div class="image-slot pred-reveal" data-slot="candidate-02">
+                    <img
+                      class="slot-img"
+                      src="./assets/brad/localization_candidate_02.png"
+                      alt="Localization candidate 2"
+                      onerror="this.classList.add('is-missing')"
+                    />
+                    <div class="ultrasound fallback-ultrasound"></div>
+                    <div class="asset-hint">./assets/brad/localization_candidate_02.png</div>
+                  </div>
+                </div>
+                <div class="pred-title"><span class="birads">BI-RADS 3</span><span class="type">Benign</span></div>
+                <div class="conf"><span>Pred Conf:</span><strong>55.2%</strong></div>
+                <div class="sim-small">Img Sim 93.60%<br />Txt Sim 100.00%</div>
+              </div>
+
+              <div class="pred-card" data-card-index="2">
+                <div class="pred-img">
+                  <div class="pred-base-img">
+                    <img class="slot-img" src="./assets/brad/input_case.png" alt="Input image" onerror="this.classList.add('is-missing')" />
+                  </div>
+                  <!-- Replace image file at: ./assets/brad/localization_candidate_03.png -->
+                  <div class="image-slot pred-reveal" data-slot="candidate-03">
+                    <img
+                      class="slot-img"
+                      src="./assets/brad/localization_candidate_03.png"
+                      alt="Localization candidate 3"
+                      onerror="this.classList.add('is-missing')"
+                    />
+                    <div class="ultrasound fallback-ultrasound"></div>
+                    <div class="asset-hint">./assets/brad/localization_candidate_03.png</div>
+                  </div>
+                </div>
+                <div class="pred-title"><span class="birads">BI-RADS 3</span><span class="type">Benign</span></div>
+                <div class="conf"><span>Pred Conf:</span><strong>55.6%</strong></div>
+                <div class="sim-small">Img Sim 93.54%<br />Txt Sim 100.00%</div>
+              </div>
+
+              <div class="pred-card" data-card-index="3">
+                <div class="pred-img">
+                  <div class="pred-base-img">
+                    <img class="slot-img" src="./assets/brad/input_case.png" alt="Input image" onerror="this.classList.add('is-missing')" />
+                  </div>
+                  <!-- Replace image file at: ./assets/brad/localization_candidate_04.png -->
+                  <div class="image-slot pred-reveal" data-slot="candidate-04">
+                    <img
+                      class="slot-img"
+                      src="./assets/brad/localization_candidate_04.png"
+                      alt="Localization candidate 4"
+                      onerror="this.classList.add('is-missing')"
+                    />
+                    <div class="ultrasound fallback-ultrasound"></div>
+                    <div class="asset-hint">./assets/brad/localization_candidate_04.png</div>
+                  </div>
+                </div>
+                <div class="pred-title"><span class="birads red">BI-RADS 4</span><span class="type">Malignant</span></div>
+                <div class="conf"><span>Pred Conf:</span><strong>55.4%</strong></div>
+                <div class="sim-small">Img Sim 93.47%<br />Txt Sim 98.83%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="help">
+        Click the highlighted slot to advance.<br />
+        Dev keys: ←/→ step, A asset paths, D buttons, H help, R reset
+      </div>
+
+      <div class="controls">
+        <button id="prevBtn">Prev</button>
+        <button id="nextBtn">Next</button>
+        <button id="playBtn">Auto</button>
+      </div>
+    </main>
+    <div class="caption" id="caption">Input a breast ultrasound image.</div>
+
+  </div>
+
+  <script>
+    const clinicalTokens = [
+      { text: "Ultrasonography shows an " },
+      { text: "oval shaped", mark: true },
+      { text: ", " },
+      { text: "parallel oriented", mark: true },
+      { text: ", " },
+      { text: "circumscribed hypoechoic mass", mark: true },
+      { text: "; " },
+      { text: "posterior enhancement", mark: true },
+      { text: "." }
+    ];
+
+    const slides = [
+      {
+        id: "input-image",
+        className: "step-input-image",
+        caption: "Input a breast ultrasound image.",
+        activeWorkflow: 0,
+        duration: 2000,
+        actions: ["resetAll"]
+      },
+      {
+        id: "input-text",
+        className: "step-input-text",
+        caption: "An MLLM generates a BI-RADS lexicon-style pseudo-report from the image.",
+        activeWorkflow: 0,
+        duration: 6000,
+        actions: ["resetText", "typeClinicalText"]
+      },
+      {
+        id: "retrieve",
+        className: "step-retrieve",
+        caption: "Retrieve the most similar reference cases with BI-RADS-aware image–text embeddings.",
+        activeWorkflow: 1,
+        duration: 6000,
+        actions: ["ensureClinicalTextStatic", "showReferenceLoading", "revealReference"]
+      },
+      {
+        id: "localize",
+        className: "step-localize",
+        caption: "Retrieved references guide few-shot localization of the lesion in the query image.",
+        activeWorkflow: 2,
+        duration: 6000,
+        actions: ["ensureClinicalTextStatic", "showReferenceStatic", "showLocalizationLoading", "revealPredictionCards"]
+      },
+      {
+        id: "segment",
+        className: "step-segment",
+        caption: "The selected box prompts a segmentation model to delineate the lesion ROI.",
+        activeWorkflow: 3,
+        duration: 5000,
+        actions: ["ensureClinicalTextStatic", "showReferenceStatic", "showLocalizationStatic"]
+      },
+      {
+        id: "diagnose",
+        className: "step-diagnose",
+        caption: "ROI-guided attention predicts BI-RADS probabilities with visual evidence.",
+        activeWorkflow: 4,
+        duration: 5000,
+        actions: ["ensureClinicalTextStatic", "showReferenceStatic", "showLocalizationStatic", "animateProbabilities"]
+      },
+      {
+        id: "final",
+        className: "step-final",
+        caption: `Retrieval-augmented diagnosis complete — <span class="caption-result">BI-RADS 3 · Benign · 55.7%</span>`,
+        activeWorkflow: 5,
+        duration: 4000,
+        actions: ["showEverything"]
+      }
+    ];
+
+    const stage = document.getElementById("stage");
+    const caption = document.getElementById("caption");
+    const steps = [...document.querySelectorAll(".step")];
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const playBtn = document.getElementById("playBtn");
+
+    let index = 0;
+    let timer = null;
+    let actionTimers = [];
+    let countAnimationFrames = [];
+
+    function clearActionTimers() {
+      actionTimers.forEach(clearTimeout);
+      actionTimers = [];
+      countAnimationFrames.forEach(cancelAnimationFrame);
+      countAnimationFrames = [];
+    }
+
+    function schedule(fn, delay) {
+      const id = setTimeout(fn, delay);
+      actionTimers.push(id);
+      return id;
+    }
+
+    function renderClinicalTextStatic() {
+      return clinicalTokens.map(token => token.mark ? `<mark>${token.text}</mark>` : token.text).join("");
+    }
+
+    function resetAnimatedElements() {
+      const clinicalText = document.getElementById("clinicalText");
+      const clinicalCursor = document.getElementById("clinicalCursor");
+      if (clinicalText) clinicalText.innerHTML = "";
+      if (clinicalCursor) clinicalCursor.classList.add("is-hidden");
+
+      document.getElementById("referenceLoading")?.classList.remove("is-visible");
+      document.getElementById("referenceContent")?.classList.remove("is-hidden");
+
+      document.getElementById("localizationLoading")?.classList.remove("is-visible");
+      document.getElementById("localizationContent")?.classList.remove("is-hidden");
+
+      document.querySelectorAll("#referenceContent .reveal-item").forEach(item => {
+        item.classList.remove("is-hidden");
+      });
+
+      document.querySelectorAll(".pred-card").forEach(card => {
+        card.classList.remove("is-hidden", "is-visible");
+      });
+
+      document.querySelectorAll(".pred-reveal").forEach(el => el.classList.remove("is-revealed"));
+
+      document.querySelectorAll(".anim-bbox, .anim-mask").forEach(el => {
+        el.classList.remove("is-visible");
+      });
+
+      document.querySelectorAll(".fill[data-target]").forEach(fill => {
+        fill.style.width = "0%";
+      });
+
+      document.querySelectorAll(".percent[data-target]").forEach(percent => {
+        percent.textContent = "0.0%";
+      });
+    }
+
+    function resetText() {
+      const clinicalText = document.getElementById("clinicalText");
+      const clinicalCursor = document.getElementById("clinicalCursor");
+      if (clinicalText) clinicalText.innerHTML = "";
+      if (clinicalCursor) clinicalCursor.classList.remove("is-hidden");
+    }
+
+    function typeClinicalText() {
+      const container = document.getElementById("clinicalText");
+      const cursor = document.getElementById("clinicalCursor");
+      if (!container) return;
+
+      container.innerHTML = "";
+      cursor?.classList.remove("is-hidden");
+
+      const units = [];
+      clinicalTokens.forEach(token => {
+        const parts = token.text.split(/(\s+)/).filter(part => part.length > 0);
+        parts.forEach(part => units.push({ text: part, mark: token.mark }));
+      });
+
+      let i = 0;
+
+      function appendNext() {
+        if (i >= units.length) {
+          document.querySelectorAll("mark[data-active='true']").forEach(m => delete m.dataset.active);
+          cursor?.classList.add("is-hidden");
+          return;
+        }
+
+        const unit = units[i];
+
+        if (unit.mark) {
+          let last = container.lastElementChild;
+          if (!last || last.tagName !== "MARK" || last.dataset.active !== "true") {
+            document.querySelectorAll("mark[data-active='true']").forEach(m => delete m.dataset.active);
+            last = document.createElement("mark");
+            last.dataset.active = "true";
+            container.appendChild(last);
+          }
+          last.append(document.createTextNode(unit.text));
+        } else {
+          document.querySelectorAll("mark[data-active='true']").forEach(m => delete m.dataset.active);
+          container.append(document.createTextNode(unit.text));
+        }
+
+        i += 1;
+        schedule(appendNext, unit.text.trim() === "" ? 28 : 88);
+      }
+
+      appendNext();
+    }
+
+    function ensureClinicalTextStatic() {
+      const clinicalText = document.getElementById("clinicalText");
+      const clinicalCursor = document.getElementById("clinicalCursor");
+      if (clinicalText) clinicalText.innerHTML = renderClinicalTextStatic();
+      clinicalCursor?.classList.add("is-hidden");
+    }
+
+    function showReferenceLoading() {
+      const loading = document.getElementById("referenceLoading");
+      const content = document.getElementById("referenceContent");
+      const items = document.querySelectorAll("#referenceContent .reveal-item");
+
+      content?.classList.add("is-hidden");
+      loading?.classList.add("is-visible");
+      items.forEach(item => item.classList.add("is-hidden"));
+    }
+
+    function revealReference() {
+      const loading = document.getElementById("referenceLoading");
+      const content = document.getElementById("referenceContent");
+      const items = document.querySelectorAll("#referenceContent .reveal-item");
+
+      schedule(() => {
+        loading?.classList.remove("is-visible");
+        content?.classList.remove("is-hidden");
+
+        items.forEach((item, i) => {
+          schedule(() => item.classList.remove("is-hidden"), i * 240);
+        });
+      }, 1250);
+    }
+
+    function showReferenceStatic() {
+      document.getElementById("referenceLoading")?.classList.remove("is-visible");
+      document.getElementById("referenceContent")?.classList.remove("is-hidden");
+      document.querySelectorAll("#referenceContent .reveal-item").forEach(item => {
+        item.classList.remove("is-hidden");
+      });
+    }
+
+    function showLocalizationLoading() {
+      const loading = document.getElementById("localizationLoading");
+      const content = document.getElementById("localizationContent");
+
+      content?.classList.add("is-hidden");
+      loading?.classList.add("is-visible");
+
+      document.querySelectorAll(".pred-card").forEach(card => {
+        card.classList.add("is-hidden");
+        card.classList.remove("is-visible");
+      });
+
+      document.querySelectorAll(".anim-bbox, .anim-mask").forEach(el => {
+        el.classList.remove("is-visible");
+      });
+    }
+
+    function revealPredictionCards() {
+      schedule(() => {
+        document.getElementById("localizationLoading")?.classList.remove("is-visible");
+        document.getElementById("localizationContent")?.classList.remove("is-hidden");
+
+        document.querySelectorAll(".pred-card").forEach((card, i) => {
+          schedule(() => {
+            card.classList.remove("is-hidden");
+            card.classList.add("is-visible");
+            // input image visible first, then prediction fades in on top
+            schedule(() => {
+              card.querySelector(".pred-reveal")?.classList.add("is-revealed");
+            }, 700);
+          }, i * 280);
+        });
+      }, 1250);
+    }
+
+    function showLocalizationStatic() {
+      document.getElementById("localizationLoading")?.classList.remove("is-visible");
+      document.getElementById("localizationContent")?.classList.remove("is-hidden");
+      document.querySelectorAll(".pred-card").forEach(card => {
+        card.classList.remove("is-hidden");
+        card.classList.add("is-visible");
+      });
+      document.querySelectorAll(".pred-reveal").forEach(el => el.classList.add("is-revealed"));
+    }
+
+    function drawBoundingBoxes() {
+      // Show bbox on input image (the final prediction projected back onto the query)
+      const inputBbox = document.querySelector(".input-image-card .anim-bbox");
+      document.querySelectorAll(".anim-bbox").forEach(box => box.classList.remove("is-visible"));
+      if (inputBbox) schedule(() => inputBbox.classList.add("is-visible"), 0);
+    }
+
+    function revealMasks() {
+      // Show mask on input image after bbox
+      document.querySelectorAll(".anim-mask").forEach(mask => mask.classList.remove("is-visible"));
+      const inputMask = document.querySelector(".input-image-card .anim-mask");
+      if (inputMask) schedule(() => inputMask.classList.add("is-visible"), 700);
+    }
+
+    function showBoxesAndMasks() {
+      document.querySelectorAll(".anim-bbox, .anim-mask").forEach(el => {
+        el.classList.add("is-visible");
+      });
+    }
+
+    function animateProbabilities() {
+      const rows = [...document.querySelectorAll(".prob-box .bar-row")];
+
+      rows.forEach((row, i) => {
+        const fill = row.querySelector(".fill[data-target]");
+        const percent = row.querySelector(".percent[data-target]");
+        if (!fill || !percent) return;
+
+        const target = parseFloat(fill.dataset.target);
+        fill.style.width = "0%";
+        percent.textContent = "0.0%";
+
+        schedule(() => {
+          const start = performance.now();
+          const duration = 1000;
+
+          function tick(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            const value = target * eased;
+
+            fill.style.width = `${value}%`;
+            percent.textContent = `${value.toFixed(1)}%`;
+
+            if (t < 1) {
+              const raf = requestAnimationFrame(tick);
+              countAnimationFrames.push(raf);
+            } else {
+              fill.style.width = `${target}%`;
+              percent.textContent = `${target.toFixed(1)}%`;
+            }
+          }
+
+          const raf = requestAnimationFrame(tick);
+          countAnimationFrames.push(raf);
+        }, i * 150);
+      });
+    }
+
+    function showEverything() {
+      ensureClinicalTextStatic();
+      showReferenceStatic();
+      showLocalizationStatic();
+
+      document.querySelectorAll(".pred-card").forEach(card => {
+        card.classList.remove("is-hidden");
+        card.classList.add("is-visible");
+      });
+
+      document.querySelectorAll(".pred-reveal").forEach(el => el.classList.add("is-revealed"));
+
+      document.querySelectorAll(".anim-bbox, .anim-mask").forEach(el => {
+        el.classList.add("is-visible");
+      });
+
+      document.querySelectorAll(".fill[data-target]").forEach(fill => {
+        fill.style.width = `${fill.dataset.target}%`;
+      });
+
+      document.querySelectorAll(".percent[data-target]").forEach(percent => {
+        percent.textContent = `${parseFloat(percent.dataset.target).toFixed(1)}%`;
+      });
+    }
+
+    const actionMap = {
+      resetAll: resetAnimatedElements,
+      resetText,
+      typeClinicalText,
+      ensureClinicalTextStatic,
+      showReferenceLoading,
+      revealReference,
+      showReferenceStatic,
+      showLocalizationLoading,
+      revealPredictionCards,
+      showLocalizationStatic,
+      drawBoundingBoxes,
+      revealMasks,
+      showBoxesAndMasks,
+      animateProbabilities,
+      showEverything
+    };
+
+    function runActions(actions) {
+      actions.forEach(action => {
+        const fn = actionMap[action];
+        if (fn) fn();
+      });
+    }
+
+    function updateWorkflow(active) {
+      steps.forEach((step, i) => {
+        step.classList.remove("active", "done");
+        if (active === 5) {
+          step.classList.add("done");
+        } else if (i < active) {
+          step.classList.add("done");
+        } else if (i === active) {
+          step.classList.add("active");
+        }
+      });
+    }
+
+    function render() {
+      clearActionTimers();
+      resetAnimatedElements();
+
+      const slide = slides[index];
+      stage.className = `stage ${slide.className}`;
+      caption.innerHTML = slide.caption;
+      updateWorkflow(slide.activeWorkflow);
+      runActions(slide.actions || []);
+    }
+
+    function next() {
+      stopAuto();
+      index = Math.min(index + 1, slides.length - 1);
+      render();
+    }
+
+    function prev() {
+      stopAuto();
+      index = Math.max(index - 1, 0);
+      render();
+    }
+
+    function getExpectedClickTarget() {
+      const slide = slides[index];
+
+      switch (slide.id) {
+        case "input-image":
+          return "input-image";
+        case "input-text":
+          return "input-text";
+        case "retrieve":
+          return "reference";
+        case "localize":
+          return "localization";
+        case "segment":
+          return "selected-roi";
+        case "diagnose":
+          return "probability";
+        case "final":
+          return "stage";
+        default:
+          return null;
+      }
+    }
+
+    function pulseExpectedTarget() {
+      const expected = getExpectedClickTarget();
+      if (!expected || expected === "stage") return;
+
+      const el = document.querySelector(`[data-click-target="${expected}"]`);
+      if (!el) return;
+
+      el.classList.remove("click-pulse");
+      void el.offsetWidth;
+      el.classList.add("click-pulse");
+    }
+
+    stage.addEventListener("click", (event) => {
+      const expected = getExpectedClickTarget();
+      if (!expected) return;
+
+      if (expected === "stage" && index === slides.length - 1) {
+        index = 0;
+        render();
+        return;
+      }
+
+      if (expected === "probability") {
+        const probability = event.target.closest("[data-click-target='probability']");
+        if (probability) {
+          next();
+          return;
+        }
+        pulseExpectedTarget();
+        return;
+      }
+
+      const clicked = event.target.closest("[data-click-target]");
+      if (!clicked) {
+        pulseExpectedTarget();
+        return;
+      }
+
+      const clickedTarget = clicked.dataset.clickTarget;
+
+      if (clickedTarget === expected) {
+        next();
+      } else {
+        pulseExpectedTarget();
+      }
+    });
+
+    function stopAuto() {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      if (playBtn) playBtn.textContent = "Auto";
+    }
+
+    function playFromCurrent() {
+      stopAuto();
+      if (playBtn) playBtn.textContent = "Pause";
+
+      function advance() {
+        const duration = slides[index].duration || 2500;
+
+        timer = setTimeout(() => {
+          if (index >= slides.length - 1) {
+            stopAuto();
+            return;
+          }
+          index += 1;
+          render();
+          advance();
+        }, duration);
+      }
+
+      advance();
+    }
+
+    function toggleAuto() {
+      if (timer) {
+        stopAuto();
+      } else {
+        playFromCurrent();
+      }
+    }
+
+    nextBtn?.addEventListener("click", next);
+    prevBtn?.addEventListener("click", prev);
+    playBtn?.addEventListener("click", toggleAuto);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") next();
+      if (event.key === "ArrowLeft") prev();
+      if (event.key === " ") {
+        event.preventDefault();
+        toggleAuto();
+      }
+      if (event.key.toLowerCase() === "a") {
+        document.body.classList.toggle("show-asset-hints");
+      }
+      if (event.key.toLowerCase() === "d") {
+        document.body.classList.toggle("dev-controls");
+      }
+      if (event.key.toLowerCase() === "h") {
+        document.body.classList.toggle("show-help");
+      }
+      if (event.key.toLowerCase() === "r") {
+        index = 0;
+        render();
+      }
+    });
+
+    const isEmbed = new URLSearchParams(location.search).has("embed");
+    let visible = !isEmbed;
+    let idleTimer = null;
+
+    function loopPlay() {
+      stopAuto();
+      if (playBtn) playBtn.textContent = "Pause";
+      function advance() {
+        const duration = slides[index].duration || 2500;
+        timer = setTimeout(() => {
+          index = index >= slides.length - 1 ? 0 : index + 1;
+          render();
+          advance();
+        }, duration);
+      }
+      advance();
+    }
+
+    if (isEmbed) {
+      document.body.classList.add("embed");
+      window.addEventListener("message", (e) => {
+        if (e.data === "brad-demo:visible" && !visible) { visible = true; if (!timer) loopPlay(); }
+        if (e.data === "brad-demo:hidden") { visible = false; clearTimeout(idleTimer); stopAuto(); }
+      });
+      stage.addEventListener("click", () => {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => { if (visible) loopPlay(); }, 12000);
+      }, true);
+    }
+
+    render();
+
+    // hide CSS fallback when real images load
+    document.querySelectorAll('.slot-img').forEach(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        img.parentElement.classList.add('img-loaded');
+      } else {
+        img.addEventListener('load', () => img.parentElement.classList.add('img-loaded'));
+      }
+    });
+  </script>
+</body>
+</html>

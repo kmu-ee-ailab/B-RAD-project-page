@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="darkreader-lock">
+  <title>B-RAD: Interpretable Multimodal Retrieval Augmented Diagnosis for Breast Ultrasound with Multinational Clinical Validation and Reader Study</title>
+  <meta name="description" content="B-RAD is a BI-RADS-aware retrieval-augmented diagnosis framework for breast ultrasound, validated on eleven cohorts from seven countries (8311 images) and in a four-reader study. npj Digital Medicine (2026).">
+  <meta name="keywords" content="B-RAD, breast ultrasound, BI-RADS, retrieval-augmented diagnosis, multimodal, vision-language model, reader study, medical AI">
+  <!-- Google Scholar / Highwire tags -->
+  <meta name="citation_title" content="Interpretable multimodal retrieval augmented diagnosis for breast ultrasound with multinational clinical validation and reader study">
+  <meta name="citation_author" content="Jang, Han">
+  <meta name="citation_author" content="An, Subin">
+  <meta name="citation_author" content="Jung, Sunghyun">
+  <meta name="citation_author" content="Ji, Hye">
+  <meta name="citation_author" content="Kim, Miran">
+  <meta name="citation_author" content="Lee, Soochahn">
+  <meta name="citation_author" content="Choi, Kyu Sung">
+  <meta name="citation_author" content="Ha, Su Min">
+  <meta name="citation_journal_title" content="npj Digital Medicine">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_doi" content="10.1038/s41746-026-03272-3">
+  <meta name="citation_publisher" content="Springer Nature">
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="B-RAD">
+  <meta property="og:title" content="B-RAD: Interpretable Multimodal Retrieval Augmented Diagnosis for Breast Ultrasound with Multinational Clinical Validation and Reader Study">
+  <meta property="og:description" content="B-RAD is a BI-RADS-aware retrieval-augmented diagnosis framework for breast ultrasound, validated on eleven cohorts from seven countries (8311 images) and in a four-reader study. npj Digital Medicine (2026).">
+  <meta property="og:url" content="https://kmu-ee-ailab.github.io/B-RAD-project-page/">
+  <meta property="og:image" content="https://kmu-ee-ailab.github.io/B-RAD-project-page/static/images/og_image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="B-RAD: Interpretable Multimodal Retrieval Augmented Diagnosis for Breast Ultrasound with Multinational Clinical Validation and Reader Study">
+  <meta name="twitter:description" content="B-RAD is a BI-RADS-aware retrieval-augmented diagnosis framework for breast ultrasound, validated on eleven cohorts from seven countries (8311 images) and in a four-reader study. npj Digital Medicine (2026).">
+  <meta name="twitter:image" content="https://kmu-ee-ailab.github.io/B-RAD-project-page/static/images/og_image.jpg">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Interpretable multimodal retrieval augmented diagnosis for breast ultrasound with multinational clinical validation and reader study",
+  "name": "Interpretable multimodal retrieval augmented diagnosis for breast ultrasound with multinational clinical validation and reader study",
+  "alternateName": "B-RAD",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Han Jang"
+    },
+    {
+      "@type": "Person",
+      "name": "Subin An"
+    },
+    {
+      "@type": "Person",
+      "name": "Sunghyun Jung"
+    },
+    {
+      "@type": "Person",
+      "name": "Hye Ji"
+    },
+    {
+      "@type": "Person",
+      "name": "Miran Kim"
+    },
+    {
+      "@type": "Person",
+      "name": "Soochahn Lee"
+    },
+    {
+      "@type": "Person",
+      "name": "Kyu Sung Choi"
+    },
+    {
+      "@type": "Person",
+      "name": "Su Min Ha"
+    }
+  ],
+  "datePublished": "2026",
+  "isPartOf": {
+    "@type": "Periodical",
+    "name": "npj Digital Medicine"
+  },
+  "sameAs": "https://doi.org/10.1038/s41746-026-03272-3",
+  "url": "https://kmu-ee-ailab.github.io/B-RAD-project-page/",
+  "image": "https://kmu-ee-ailab.github.io/B-RAD-project-page/static/images/og_image.jpg",
+  "keywords": "breast ultrasound, BI-RADS, retrieval-augmented diagnosis, vision-language model, reader study"
+}
+  </script>
+  <link rel="icon" type="image/svg+xml" href="static/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="static/images/favicon-180.png">
+  <meta name="theme-color" content="#0e5e7a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css?v=10">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <a class="brand" href="#top">B-RAD</a>
+    <a class="navlink" href="#abstract">Abstract</a>
+    <a class="navlink" href="#method">Method</a>
+    <a class="navlink" href="#results">Results</a>
+    <a class="navlink" href="#qualitative">Qualitative</a>
+    <a class="navlink" href="#reader">Reader Study</a>
+    <a class="navlink" href="#appendix">Appendix</a>
+    <a class="navlink" href="#bibtex">BibTeX</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container">
+    <div class="venue">npj Digital Medicine · 2026</div>
+    <h1>Interpretable Multimodal Retrieval Augmented Diagnosis for Breast Ultrasound with Multinational Clinical Validation and Reader Study</h1>
+    <p class="subtitle"><b class="brad" style="color:var(--accent)">B-RAD</b> reads like a radiologist: it retrieves BI-RADS-matched exemplars, localizes the lesion, and decides the category.</p>
+
+    <div class="authors">
+      <span>Han Jang<sup>1,2,†</sup></span>
+      <span>Subin An<sup>3,†</sup></span>
+      <span>Sunghyun Jung<sup>2</sup></span>
+      <span>Hye Ji<sup>2</sup></span>
+      <span>Miran Kim<sup>4</sup></span>
+      <span>Soochahn Lee<sup>3,*</sup></span>
+      <span>Kyu Sung Choi<sup>2,5,6,*</sup></span>
+      <span>Su Min Ha<sup>2,5</sup></span>
+    </div>
+    <div class="affils">
+      <span><sup>1</sup>Interdisciplinary Program in Bioengineering, Seoul National University</span>
+      <span><sup>2</sup>Department of Radiology, Seoul National University Hospital</span>
+      <span><sup>3</sup>School of Electronic Engineering, Kookmin University</span>
+      <span><sup>4</sup>Department of Radiology, Kyungpook National University Chilgok Hospital</span>
+      <span><sup>5</sup>Department of Radiology, Seoul National University College of Medicine</span>
+      <span><sup>6</sup>Healthcare AI Research Institute, Seoul National University Hospital</span>
+    </div>
+    <div class="notes">† Equal contribution &nbsp;·&nbsp; * Corresponding authors</div>
+
+    <div class="buttons">
+      <a class="btn" href="https://doi.org/10.1038/s41746-026-03272-3" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.6H8V12zm0 3.4h8V17H8v-1.6zm0-6.8h4v1.6H8V8.6z"/></svg>
+        Paper
+      </a>
+      <a class="btn" href="https://github.com/snuh-rad-aicon/B-RAD" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.27 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+        Code
+      </a>
+      <a class="btn" href="https://doi.org/10.1038/s41746-026-03272-3" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
+        Supplementary
+      </a>
+      <a class="btn" href="#bibtex">
+        <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Teaser -->
+<section style="padding-top:28px">
+  <div class="container">
+    <div class="tldr">
+      <b>TL;DR</b> — Paired ultrasound–report data are scarce, so B-RAD learns a <b>BI-RADS-aware</b> image–text space from
+      <i>unpaired</i> data, uses retrieved exemplars to guide few-shot lesion localization, and steers the classifier toward the lesion with
+      training-free foveal attention. Without fine-tuning, it reaches a <b>biopsy-triage AUROC of 0.952</b> on an independent hospital cohort,
+      and in a four-reader study it raises accuracy and inter-reader agreement.
+    </div>
+  </div>
+  <div class="container" style="max-width:1336px">
+    <figure class="teaser">
+      <div class="demo-wrap" id="demo-wrap" style="position:relative;width:100%;max-width:1296px;margin:0 auto;aspect-ratio:1296/810;overflow:hidden">
+        <iframe id="demo-frame" src="demo/index.html?embed" title="B-RAD interactive demo" scrolling="no"
+          width="1296" height="810" style="position:absolute;top:0;left:0;width:1296px;height:810px;border:0;transform-origin:0 0"></iframe>
+      </div>
+      <figcaption><b>Figure 1. What a reader sees with B-RAD.</b> For an input ultrasound image, the system generates a pseudo-report, retrieves
+        similar references with known diagnoses, and shows localizations with BI-RADS predictions and their evidence.
+        The demo plays automatically; click the highlighted panel to step through it, or
+        <a href="demo/index.html" target="_blank" rel="noopener">open it full screen</a>.</figcaption>
+    </figure>
+  </div>
+  <div class="container">
+
+    <div class="stats" style="margin-top:30px">
+      <div class="stat"><div class="num">8,311</div><div class="lbl">images from 11 cohorts<br>in 7 countries</div></div>
+      <div class="stat"><div class="num">0.952</div><div class="lbl">biopsy-triage AUROC on an independent institutional cohort (no fine-tuning)</div></div>
+      <div class="stat"><div class="num">0.53<small>→</small>0.68</div><div class="lbl">inter-reader weighted κ<br>(moderate → substantial)</div></div>
+      <div class="stat"><div class="num">+9<small>–</small>25<small>pp</small></div><div class="lbl">reader accuracy gain with B-RAD across all four readers</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+<section class="alt" id="abstract">
+  <div class="container narrow">
+    <h2>Abstract</h2>
+    <p style="margin-top:22px">
+      Breast ultrasound is central to breast cancer diagnosis but suffers from substantial inter-observer variability in Breast Imaging Reporting and Data System (BI-RADS) assessment, and existing deep learning models remain opaque. Multimodal large language models promise interpretable report-based reasoning, yet scarce paired image-report data yields weak visual-semantic alignment. We propose B-RAD, a BI-RADS-aware retrieval-augmented diagnosis framework that mirrors the radiologist workflow of retrieving exemplars, localizing lesions, and determining the BI-RADS category. Its retrieval module learns BI-RADS-aware alignment from unpaired data by jointly minimizing cross-modal mismatch and ordinal prediction error. Retrieved exemplars guide few-shot detection of the lesion together with its margin and posterior acoustic features, and the detected region prompts a segmentation model whose mask drives training-free foveal attention for classification. We validated B-RAD on eleven cohorts from seven countries totaling 8311 images, spanning internal validation and three external cohorts including an independent institutional cohort. The full pipeline reached a biopsy triage AUROC of 0.952 on that institutional cohort without fine-tuning, outperforming existing vision-language models. In a four-reader study, B-RAD assistance improved accuracy, raised inter-reader agreement from moderate to substantial, and reduced missed malignancies across all readers. These findings show that retrieval-augmented diagnosis can narrow the expertise gap and support accessible breast cancer screening in resource-limited settings.
+    </p>
+  </div>
+</section>
+
+<!-- Method -->
+<section id="method">
+  <div class="container">
+    <h2>Method</h2>
+    <p class="section-lead">A cognition-aligned pipeline that follows the radiologist's reading order: retrieve, localize, then classify.</p>
+    <figure>
+      <img src="static/images/fig2_overview.png" alt="B-RAD pipeline: retrieval, few-shot detection and foundational segmentation, region-aware classification" loading="lazy">
+      <figcaption><b>Figure 2. Overview of B-RAD.</b> An input image and an MLLM-generated pseudo-report query a BI-RADS-aware corpus.
+        The retrieved exemplars guide few-shot lesion detection, the detected box prompts a segmentation foundation model, and the
+        resulting ROI is injected into the vision encoder for region-aware BI-RADS classification.</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <div class="idx">1</div>
+        <h4>BI-RADS-aware retrieval</h4>
+        <p>B-RAD-CLIP aligns images and structured lexicon text with a contrastive loss plus an ordinal loss over BI-RADS categories,
+          so similar-looking cases are also similar in category. It is trained without paired image–report data.</p>
+        <span class="tag">B-RAD-CLIP</span>
+      </div>
+      <div class="step">
+        <div class="idx">2</div>
+        <h4>Exemplar-guided localization</h4>
+        <p>The top-<i>k</i> retrieved references serve as support examples for few-shot detection of the lesion along with its margin
+          and posterior acoustic features. The predicted box then prompts a segmentation foundation model.</p>
+        <span class="tag">B-RAD-Det · B-RAD-Seg</span>
+      </div>
+      <div class="step">
+        <div class="idx">3</div>
+        <h4>ROI-guided classification</h4>
+        <p>A training-free foveal attention mask built from the segmented ROI focuses the vision encoder on the lesion, and image,
+          text, and ROI features are fused to predict BI-RADS 2–5.</p>
+        <span class="tag">B-RAD-FULL</span>
+      </div>
+    </div>
+
+    <details class="more">
+      <summary>Architecture details</summary>
+      <div class="inner">
+        <div class="two">
+          <figure class="fig-pad">
+            <img src="static/images/arch_clip_full.png" alt="Architecture of B-RAD-CLIP and B-RAD-FULL" loading="lazy">
+            <figcaption><b>B-RAD-CLIP and B-RAD-FULL.</b> (a) Contrastive and ordinal learning with visual prompts.
+              (b) ROI-derived foveal mask injected into multi-head self-attention, fused with text features for classification.</figcaption>
+          </figure>
+          <figure class="fig-pad">
+            <img src="static/images/arch_detection.png" alt="Retrieval-guided few-shot detection module" loading="lazy">
+            <figcaption><b>Retrieval-guided few-shot detection.</b> Soft prompts learned from the reference (tight box, margin, shadow,
+              background) condition the detection head on the target image.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Results -->
+<section class="alt" id="results">
+  <div class="container">
+    <h2>Quantitative Results</h2>
+    <p class="section-lead">B-RAD-FULL is the best model on every cohort, and the gap over off-the-shelf vision-language models widens on the independent hospital data.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-panel="t-inst">Institutional cohort</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="t-cot">BUS-CoT (external)</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="t-main">ID &amp; BrEaST</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="t-loc">Localization</button>
+    </div>
+
+    <div class="panel" id="t-inst">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th rowspan="2">Model</th><th rowspan="2">Setting</th><th rowspan="2">Acc</th><th rowspan="2">F1</th><th colspan="3">AUROC [95% CI]</th></tr>
+            <tr><th>BI-RADS 5 vs others</th><th>Biopsy triage (2/3 vs 4/5)</th><th>4-class weighted</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>OpenCLIP</td><td>Img, Txt</td><td>0.37 ± 0.03</td><td>0.41 ± 0.03</td><td>0.729 [0.667–0.787]</td><td>0.799 [0.735–0.863]</td><td>0.605 [0.568–0.644]</td></tr>
+            <tr><td>BiomedCLIP</td><td>Img, Txt</td><td>0.33 ± 0.03</td><td>0.36 ± 0.03</td><td>0.760 [0.701–0.812]</td><td>0.890 [0.840–0.934]</td><td>0.660 [0.620–0.699]</td></tr>
+            <tr><td>BMC-CLIP</td><td>Img, Txt</td><td>0.38 ± 0.03</td><td>0.30 ± 0.03</td><td>0.629 [0.566–0.694]</td><td>0.671 [0.583–0.756]</td><td>0.585 [0.528–0.638]</td></tr>
+            <tr class="ours"><td>B-RAD-CLIP</td><td>Img, Txt</td><td class="best">0.63 ± 0.03</td><td>0.63 ± 0.03</td><td>0.806 [0.750–0.855]</td><td>0.951 [0.922–0.973]</td><td>0.808 [0.772–0.843]</td></tr>
+            <tr class="ours"><td>B-RAD-FULL</td><td>Img, Txt, ROI</td><td class="best">0.63 ± 0.03</td><td class="best">0.64 ± 0.03</td><td class="best">0.807 [0.757–0.855]</td><td class="best">0.952 [0.925–0.973]</td><td class="best">0.809 [0.774–0.843]</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tnote">n = 289, BI-RADS 2–5, collected from routine diagnostic breast ultrasound at a tertiary referral hospital (83.7% BI-RADS 4–5). All models were trained only on public ID cohorts and evaluated without fine-tuning.</p>
+    </div>
+
+    <div class="panel" id="t-cot" hidden>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th rowspan="2">Model</th><th rowspan="2">Setting</th><th rowspan="2">Acc</th><th rowspan="2">F1</th><th colspan="3">AUROC [95% CI]</th></tr>
+            <tr><th>BI-RADS 5 vs others</th><th>Biopsy triage (2/3 vs 4/5)</th><th>4-class weighted</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>OpenCLIP</td><td>Img, Txt</td><td>0.29 ± 0.01</td><td>0.35 ± 0.01</td><td>0.748 [0.719–0.777]</td><td>0.730 [0.711–0.748]</td><td>0.634 [0.620–0.649]</td></tr>
+            <tr><td>BiomedCLIP</td><td>Img, Txt</td><td>0.44 ± 0.01</td><td>0.45 ± 0.01</td><td>0.674 [0.640–0.706]</td><td>0.626 [0.606–0.649]</td><td>0.562 [0.544–0.579]</td></tr>
+            <tr><td>BMC-CLIP</td><td>Img, Txt</td><td>0.20 ± 0.01</td><td>0.25 ± 0.01</td><td>0.550 [0.513–0.586]</td><td>0.561 [0.541–0.582]</td><td>0.499 [0.484–0.513]</td></tr>
+            <tr class="ours"><td>B-RAD-CLIP</td><td>Img, Txt</td><td>0.57 ± 0.01</td><td>0.56 ± 0.01</td><td>0.738 [0.706–0.768]</td><td>0.726 [0.705–0.745]</td><td>0.657 [0.640–0.673]</td></tr>
+            <tr class="ours"><td>B-RAD-FULL</td><td>Img, Txt, ROI</td><td class="best">0.67 ± 0.01</td><td class="best">0.64 ± 0.01</td><td class="best">0.824 [0.800–0.845]</td><td class="best">0.799 [0.782–0.815]</td><td class="best">0.732 [0.715–0.747]</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tnote">n = 3,232, multi-center, BI-RADS 2–5. Five-fold ensemble with class-aware decision threshold, evaluated without fine-tuning.</p>
+    </div>
+
+    <div class="panel" id="t-main" hidden>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th rowspan="2">Model</th><th rowspan="2">Setting</th><th colspan="3">ID (5-fold CV)</th><th colspan="3">OOD (BrEaST)</th></tr>
+            <tr><th>Acc</th><th>F1</th><th>AUROC</th><th>Acc</th><th>F1</th><th>AUROC</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="8">Image-only baselines</td></tr>
+            <tr><td>BI-RADS_ensemble</td><td>Img</td><td>0.63 ± 0.01</td><td>0.63 ± 0.01</td><td>0.829 ± 0.010</td><td>0.47 ± 0.03</td><td>0.41 ± 0.02</td><td>0.690 ± 0.011</td></tr>
+            <tr><td>BRNet</td><td>Img</td><td>0.45 ± 0.03</td><td>0.39 ± 0.03</td><td>0.650 ± 0.025</td><td>0.55 ± 0.04</td><td>0.40 ± 0.04</td><td>0.488 ± 0.013</td></tr>
+            <tr><td>EfficientNet-v2-L</td><td>Img</td><td>0.64 ± 0.04</td><td>0.37 ± 0.02</td><td>0.819 ± 0.010</td><td>0.49 ± 0.03</td><td>0.44 ± 0.03</td><td>0.693 ± 0.017</td></tr>
+            <tr><td>USFM</td><td>Img</td><td>0.50 ± 0.03</td><td>0.46 ± 0.03</td><td>0.751 ± 0.021</td><td>0.31 ± 0.03</td><td>0.27 ± 0.05</td><td>0.586 ± 0.013</td></tr>
+            <tr><td>ViT-B-16</td><td>Img</td><td>0.54 ± 0.04</td><td>0.52 ± 0.03</td><td>0.795 ± 0.012</td><td>0.49 ± 0.06</td><td>0.43 ± 0.04</td><td>0.696 ± 0.023</td></tr>
+            <tr><td>ViT-L-16</td><td>Img</td><td>0.62 ± 0.01</td><td>0.63 ± 0.04</td><td>0.824 ± 0.031</td><td>0.53 ± 0.10</td><td>0.46 ± 0.01</td><td>0.716 ± 0.021</td></tr>
+            <tr class="group"><td colspan="8">Contrastive vision-language models</td></tr>
+            <tr><td>OpenCLIP</td><td>Img</td><td>0.39 ± 0.02</td><td>0.37 ± 0.02</td><td>0.708 ± 0.015</td><td>0.33 ± 0.03</td><td>0.33 ± 0.03</td><td>0.602 ± 0.027</td></tr>
+            <tr><td></td><td>Txt</td><td>0.89 ± 0.01</td><td>0.89 ± 0.01</td><td>0.981 ± 0.004</td><td>0.88 ± 0.02</td><td>0.89 ± 0.02</td><td>0.986 ± 0.004</td></tr>
+            <tr><td></td><td>Img, Txt</td><td>0.90 ± 0.01</td><td>0.90 ± 0.01</td><td>0.984 ± 0.004</td><td>0.87 ± 0.02</td><td>0.87 ± 0.02</td><td>0.982 ± 0.004</td></tr>
+            <tr><td>BMC-CLIP</td><td>Img</td><td>0.35 ± 0.02</td><td>0.35 ± 0.02</td><td>0.689 ± 0.016</td><td>0.27 ± 0.03</td><td>0.22 ± 0.03</td><td>0.539 ± 0.024</td></tr>
+            <tr><td></td><td>Txt</td><td>0.89 ± 0.01</td><td>0.89 ± 0.01</td><td>0.978 ± 0.005</td><td>0.87 ± 0.02</td><td>0.87 ± 0.02</td><td>0.981 ± 0.005</td></tr>
+            <tr><td></td><td>Img, Txt</td><td>0.91 ± 0.01</td><td>0.91 ± 0.01</td><td>0.986 ± 0.003</td><td>0.86 ± 0.02</td><td>0.86 ± 0.02</td><td>0.973 ± 0.006</td></tr>
+            <tr><td>BiomedCLIP</td><td>Img</td><td>0.45 ± 0.02</td><td>0.43 ± 0.02</td><td>0.747 ± 0.014</td><td>0.35 ± 0.05</td><td>0.33 ± 0.06</td><td>0.647 ± 0.015</td></tr>
+            <tr><td></td><td>Txt</td><td>0.89 ± 0.01</td><td>0.89 ± 0.02</td><td>0.982 ± 0.004</td><td>0.85 ± 0.02</td><td>0.85 ± 0.02</td><td>0.971 ± 0.008</td></tr>
+            <tr><td></td><td>Img, Txt</td><td>0.92 ± 0.01</td><td>0.92 ± 0.01</td><td>0.988 ± 0.003</td><td>0.86 ± 0.02</td><td>0.86 ± 0.02</td><td>0.969 ± 0.008</td></tr>
+            <tr class="group"><td colspan="8">Ours</td></tr>
+            <tr class="ours"><td>B-RAD-CLIP</td><td>Img</td><td>0.78 ± 0.02</td><td>0.78 ± 0.02</td><td>0.944 ± 0.007</td><td>0.81 ± 0.02</td><td>0.81 ± 0.02</td><td>0.965 ± 0.010</td></tr>
+            <tr class="ours"><td></td><td>Txt</td><td>0.90 ± 0.01</td><td>0.90 ± 0.01</td><td>0.987 ± 0.003</td><td>0.88 ± 0.02</td><td>0.89 ± 0.02</td><td>0.990 ± 0.003</td></tr>
+            <tr class="ours"><td></td><td>Img, Txt</td><td>0.94 ± 0.01</td><td>0.94 ± 0.01</td><td>0.993 ± 0.002</td><td>0.92 ± 0.02</td><td>0.92 ± 0.02</td><td>0.992 ± 0.002</td></tr>
+            <tr class="ours"><td>B-RAD-FULL</td><td>Img, Txt, ROI</td><td class="best">0.95 ± 0.01</td><td class="best">0.95 ± 0.01</td><td class="best">0.995 ± 0.002</td><td class="best">0.93 ± 0.01</td><td class="best">0.93 ± 0.01</td><td class="best">0.996 ± 0.001</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tnote">ID: mean ± SD over five-fold cross-validation. OOD: five-fold ensemble, ± bootstrap SD (1,000 iterations).</p>
+    </div>
+
+    <div class="panel" id="t-loc" hidden>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th rowspan="2">Task</th><th rowspan="2">Model</th><th colspan="2">ID</th><th colspan="2">OOD (BrEaST/STU/UDIAT)</th><th colspan="2">OOD (BUS-CoT)</th></tr>
+            <tr><th>mDSC</th><th>mIoU</th><th>mDSC</th><th>mIoU</th><th>mDSC</th><th>mIoU</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="8">Detection · 0-shot</td></tr>
+            <tr><td>Det</td><td>DGANet</td><td>0.773 ± 0.020</td><td>0.690 ± 0.022</td><td>0.695 ± 0.013</td><td>0.616 ± 0.012</td><td>0.664 ± 0.009</td><td>0.593 ± 0.008</td></tr>
+            <tr><td>Det</td><td>Faster-RCNN</td><td>0.843 ± 0.008</td><td>0.770 ± 0.007</td><td>0.704 ± 0.012</td><td>0.622 ± 0.010</td><td>0.719 ± 0.008</td><td>0.642 ± 0.007</td></tr>
+            <tr><td>Det</td><td>BiomedParse</td><td>0.818 ± 0.005</td><td>0.735 ± 0.007</td><td>0.767 ± 0.014</td><td>0.680 ± 0.017</td><td>0.726 ± 0.000</td><td>0.641 ± 0.000</td></tr>
+            <tr class="ours"><td>Det</td><td>B-RAD-Det</td><td>0.862 ± 0.003</td><td>0.788 ± 0.003</td><td>0.791 ± 0.007</td><td>0.703 ± 0.008</td><td>0.760 ± 0.005</td><td>0.682 ± 0.004</td></tr>
+            <tr class="group"><td colspan="8">Detection · k-shot (k = 4)</td></tr>
+            <tr><td>Det</td><td>Self-Prompt SAM</td><td>0.456 ± 0.013</td><td>0.372 ± 0.012</td><td>0.565 ± 0.019</td><td>0.478 ± 0.019</td><td>0.443 ± 0.002</td><td>0.334 ± 0.001</td></tr>
+            <tr class="ours"><td>Det</td><td>B-RAD-Det</td><td class="best">0.880 ± 0.003</td><td class="best">0.808 ± 0.004</td><td class="best">0.812 ± 0.004</td><td class="best">0.727 ± 0.005</td><td class="best">0.789 ± 0.006</td><td class="best">0.710 ± 0.006</td></tr>
+            <tr class="group"><td colspan="8">Segmentation · k-shot</td></tr>
+            <tr><td>Seg</td><td>UniverSeg*</td><td>0.541 ± 0.012</td><td>0.453 ± 0.012</td><td>0.521 ± 0.000</td><td>0.435 ± 0.000</td><td>0.405 ± 0.000</td><td>0.326 ± 0.000</td></tr>
+            <tr><td>Seg</td><td>MultiverSeg*</td><td>0.713 ± 0.013</td><td>0.636 ± 0.013</td><td>0.710 ± 0.000</td><td>0.633 ± 0.000</td><td>0.550 ± 0.000</td><td>0.475 ± 0.000</td></tr>
+            <tr><td>Seg</td><td>Self-Prompt SAM</td><td>0.437 ± 0.015</td><td>0.360 ± 0.013</td><td>0.555 ± 0.002</td><td>0.469 ± 0.002</td><td>0.393 ± 0.003</td><td>0.295 ± 0.002</td></tr>
+            <tr><td>Seg</td><td>SegGPT*</td><td>0.708 ± 0.008</td><td>0.626 ± 0.008</td><td>0.620 ± 0.000</td><td>0.542 ± 0.000</td><td>0.597 ± 0.000</td><td>0.523 ± 0.000</td></tr>
+            <tr class="ours"><td>Seg</td><td>B-RAD-Seg</td><td class="best">0.853 ± 0.004</td><td class="best">0.775 ± 0.005</td><td class="best">0.789 ± 0.005</td><td class="best">0.705 ± 0.006</td><td class="best">0.782 ± 0.006</td><td class="best">0.701 ± 0.005</td></tr>
+            <tr><td>Seg</td><td><i>GT-based box (upper bound)</i></td><td>0.913 ± 0.011</td><td>0.844 ± 0.017</td><td>0.900 ± 0.014</td><td>0.823 ± 0.023</td><td>0.930 ± 0.001</td><td>0.872 ± 0.001</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tnote">* Publicly released models used frozen. B-RAD-Seg is UltraSAM prompted with boxes predicted by B-RAD-Det.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Qualitative results -->
+<section id="qualitative">
+  <div class="container">
+    <h2>Qualitative Results</h2>
+    <p class="section-lead">Every prediction comes with retrieved evidence, a localized lesion, and attention that can be inspected.</p>
+    <h3>BI-RADS-aware retrieval</h3>
+    <figure>
+      <img src="static/images/fig4_retrieval.jpg" alt="Top-5 retrieved exemplars for a BI-RADS 2 and a BI-RADS 5 query" loading="lazy">
+      <figcaption><b>Figure 4.</b> Top-5 retrieved exemplars for (a) a benign BI-RADS 2 query and (b) a malignant BI-RADS 5 query.
+        Green frames match the query category; red frames do not. Baselines often retrieve exemplars from the wrong category.</figcaption>
+    </figure>
+
+    <h3>Lesion localization</h3>
+    <div class="pair">
+      <figure style="--ar:1.2308">
+        <img src="static/images/fig6_detection.jpg" alt="Few-shot lesion detection compared with baselines" loading="lazy">
+        <figcaption><b>Figure 6.</b> Few-shot detection. Ground-truth boxes in green, predictions in red.</figcaption>
+      </figure>
+      <figure style="--ar:1.4848">
+        <img src="static/images/fig7_segmentation.jpg" alt="Few-shot segmentation masks compared with baselines" loading="lazy">
+        <figcaption><b>Figure 7.</b> Segmentation masks from boxes predicted by B-RAD-Det, compared with in-context segmentation baselines.</figcaption>
+      </figure>
+    </div>
+
+    <h3>Diagnostic evidence</h3>
+    <figure>
+  <img src="static/images/fig8_cases.jpg" alt="Representative cases for BI-RADS 2 to 5 with predicted probabilities by model" loading="lazy">
+  <figcaption><b>Figure 8.</b> Representative test cases for BI-RADS 2–5 with the MLLM-generated description, predicted ROI (red),
+    ground truth (yellow), and predicted class probabilities for each model.</figcaption>
+</figure>
+  </div>
+</section>
+
+<!-- Reader study -->
+<section class="alt" id="reader">
+  <div class="container">
+    <h2>Reader Study</h2>
+    <p class="section-lead">Four radiologists with 2–5 years of experience each read 100 cases (65 benign, 35 malignant by pathology) unassisted,
+      with an MLLM (MedGemma-4B), and with B-RAD.</p>
+
+    <div class="reader-grid">
+      <div class="card">
+        <h4>Diagnostic accuracy (4-class BI-RADS)</h4>
+        <div class="sub">Agreement with the expert BI-RADS assessment, %</div>
+        <div class="legend"><span><i class="c-base"></i>Baseline</span><span><i class="c-mllm"></i>+ MLLM</span><span><i class="c-brad"></i>+ B-RAD</span></div>
+        <div id="acc-bars"></div>
+        <p class="tnote" style="margin-top:6px">McNemar (Bonferroni α = 0.017): Baseline vs B-RAD p &lt; 0.001 for Senior, Junior and Board-certified readers; PGY-2 p = 0.136.
+          MLLM assistance showed no significant improvement for any reader (all p &gt; 0.4).</p>
+      </div>
+
+      <div class="reader-side">
+        <div class="card">
+          <h4>Inter-reader agreement</h4>
+          <div class="sub">Quadratic-weighted κ across 4 readers</div>
+          <div class="kappa">
+            <div class="from"><div class="big">0.534</div><small>Baseline · moderate</small></div>
+            <div class="arrow">→</div>
+            <div class="to"><div class="big">0.682</div><small>+ B-RAD · substantial</small></div>
+          </div>
+          <table class="mini">
+            <thead><tr><th>Condition</th><th>% Agree</th><th>Biopsy κ</th><th>Fleiss' κ</th></tr></thead>
+            <tbody>
+              <tr><td>Baseline</td><td>50.3</td><td>0.399</td><td>0.292</td></tr>
+              <tr><td>+ MLLM</td><td>54.5</td><td>0.490</td><td>0.306</td></tr>
+              <tr class="ours"><td>+ B-RAD</td><td class="best">62.7</td><td class="best">0.576</td><td class="best">0.463</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h4>Missed malignancies (biopsy decision)</h4>
+          <div class="sub">% of malignant cases rated BI-RADS 2/3 (lower is better)</div>
+          <table class="mini">
+            <thead><tr><th>Reader</th><th>Baseline</th><th>+ MLLM</th><th>+ B-RAD</th></tr></thead>
+            <tbody>
+              <tr><td>Senior breast (5 yr)</td><td>14.3</td><td>17.1</td><td class="best">11.4</td></tr>
+              <tr><td>Junior breast (4 yr)</td><td>11.4</td><td>25.7</td><td class="best">8.6</td></tr>
+              <tr><td>Board-certified (4 yr)</td><td>37.1</td><td>28.6</td><td class="best">17.1</td></tr>
+              <tr><td>PGY-2 resident (2 yr)</td><td>25.7</td><td>37.1</td><td class="best">11.4</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="text-align:center">Subjective evaluation (5-point Likert, mean of 4 readers)</h3>
+    <div class="table-wrap narrow">
+      <table>
+        <thead><tr><th>Dimension</th><th>+ MLLM</th><th>+ B-RAD</th></tr></thead>
+        <tbody>
+          <tr><td>Diagnostic confidence</td><td>3.37</td><td class="best">3.77</td></tr>
+          <tr><td>Interpretability</td><td>2.99</td><td class="best">4.00</td></tr>
+          <tr><td>Clinical utility</td><td>2.91</td><td class="best">3.74</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote" style="text-align:center">All three readers with less experience exceeded the unassisted senior breast radiologist (54.0%) when assisted by B-RAD.</p>
+  </div>
+</section>
+
+<!-- Appendix -->
+<section id="appendix">
+  <div class="container">
+    <h2>Appendix</h2>
+    <p class="section-lead">Additional results from the paper. Figure numbers follow the article.</p>
+    <details class="more">
+      <summary>Multinational cohorts <small>11 datasets · 7 countries · 8,311 images</small></summary>
+      <div class="inner">
+        <p class="back-link">Related: <a href="#results">Quantitative Results</a></p>
+        <p class="tnote" style="margin:0 0 12px">Six in-distribution datasets for training, four public external cohorts, and one independent Korean hospital cohort that was never used for training.</p>
+        <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Set</th><th>Dataset</th><th>Images</th><th>Country</th><th>Center</th><th>Annotations</th><th>Usage</th><th>BI-RADS 2 / 3 / 4 / 5</th></tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="8">In-distribution (ID)</td></tr>
+          <tr><td>ID</td><td>HiSBreast</td><td>287</td><td>Vietnam</td><td>Single</td><td>BI-RADS</td><td>Cls</td><td>30 / 77 / 69 / 111</td></tr>
+          <tr><td>ID</td><td>OASBUD (RF)</td><td>200</td><td>Poland</td><td>Single</td><td>BI-RADS</td><td>Cls</td><td>0 / 62 / 88 / 50</td></tr>
+          <tr><td>ID</td><td>BUS-BRA</td><td>1,875</td><td>Brazil</td><td>Single</td><td>BI-RADS, Mask</td><td>Cls, Det/Seg</td><td>562 / 463 / 693 / 157</td></tr>
+          <tr><td>ID</td><td>BUSI-WHU</td><td>927</td><td>China</td><td>Single</td><td>Mask</td><td>Det/Seg</td><td>–</td></tr>
+          <tr><td>ID</td><td>BUSI</td><td>780</td><td>Egypt</td><td>Single</td><td>Mask</td><td>Det/Seg</td><td>–</td></tr>
+          <tr><td>ID</td><td>BUS-UCLM</td><td>264</td><td>Spain</td><td>Single</td><td>Mask</td><td>Det/Seg</td><td>–</td></tr>
+          <tr class="group"><td colspan="8">Out-of-distribution (OOD)</td></tr>
+          <tr><td>OOD</td><td>BrEaST</td><td>252</td><td>Poland</td><td>Multi</td><td>BI-RADS, Mask</td><td>Cls, Det/Seg</td><td>30 / 37 / 139 / 46</td></tr>
+          <tr><td>OOD</td><td>BUS-CoT</td><td>3,232</td><td>China</td><td>Multi</td><td>BI-RADS, Mask</td><td>Cls, Det/Seg</td><td>73 / 976 / 1942 / 241</td></tr>
+          <tr><td>OOD</td><td>BUS-STU</td><td>42</td><td>China</td><td>Single</td><td>Mask</td><td>Det/Seg</td><td>–</td></tr>
+          <tr><td>OOD</td><td>UDIAT</td><td>163</td><td>Spain</td><td>Single</td><td>Mask</td><td>Det/Seg</td><td>–</td></tr>
+          <tr class="group"><td colspan="8">Independent clinical validation</td></tr>
+          <tr class="ours"><td>Clinical</td><td>Institutional</td><td>289</td><td>South Korea</td><td>Single</td><td>BI-RADS</td><td>Cls</td><td>19 / 28 / 127 / 115</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">Cls: classification, Det: detection, Seg: segmentation. Total 8,311 images (ID 4,333 · OOD 3,689 · Clinical 289).</p>
+      </div>
+    </details>
+    <details class="more">
+      <summary>ROC curves <small>Figure 3 · BrEaST, BUS-CoT and institutional cohorts</small></summary>
+      <div class="inner">
+        <p class="back-link">Related: <a href="#results">Quantitative Results</a></p>
+        <figure>
+      <img src="static/images/fig3_roc.png" alt="ROC curves on BrEaST, BUS-CoT and the institutional cohort" loading="lazy">
+      <figcaption><b>Figure 3.</b> ROC curves on BrEaST (a–c), BUS-CoT (d–f), and the independent institutional cohort (g–i) at three clinical
+        thresholds: BI-RADS 5 vs others, biopsy triage (BI-RADS 2/3 vs 4/5), and four-class one-vs-rest.</figcaption>
+    </figure>
+      </div>
+    </details>
+    <details class="more">
+      <summary>Embedding space <small>Figure 5 · t-SNE of BI-RADS-aware embeddings</small></summary>
+      <div class="inner">
+        <p class="back-link">Related: <a href="#qualitative">Qualitative Results · BI-RADS-aware retrieval</a></p>
+        <figure>
+      <img src="static/images/fig5_tsne.png" alt="t-SNE of embedding spaces for baselines and B-RAD" loading="lazy">
+      <figcaption><b>Figure 5.</b> t-SNE of the multimodal embedding space, colored by ground-truth BI-RADS. B-RAD-CLIP and B-RAD-FULL
+        separate the categories, while baseline embeddings are entangled.</figcaption>
+    </figure>
+      </div>
+    </details>
+    <details class="more">
+      <summary>Attention analysis <small>Figure 9 · how ROI injection shifts attention to the lesion</small></summary>
+      <div class="inner">
+        <p class="back-link">Related: <a href="#qualitative">Qualitative Results · Diagnostic evidence</a></p>
+        <figure>
+      <img src="static/images/fig9_attention.jpg" alt="Attention maps before and after ROI injection, with attention ratio statistics" loading="lazy">
+      <figcaption><b>Figure 9.</b> ROI injection shifts attention from diffuse patterns (B-RAD-CLIP) to the lesion (B-RAD-FULL), which corrects the
+        BI-RADS prediction in success cases. Failure cases show attention that stays off target. The plots quantify the class-wise
+        lesion-focused attention ratio and its relation to the change in ground-truth class probability.</figcaption>
+    </figure>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="alt" style="padding:36px 0">
+  <div class="container">
+    <div class="notice">
+      <b>Intended use.</b> B-RAD is a research prototype for diagnostic decision support, applied after image acquisition as a second reader.
+      It is not a medical device and is not intended for standalone clinical diagnosis.
+    </div>
+  </div>
+</section>
+
+<!-- BibTeX -->
+<section id="bibtex">
+  <div class="container">
+    <h2>BibTeX</h2>
+    <p class="section-lead">If you find this work useful, please cite:</p>
+    <div class="bib">
+      <button class="copy" type="button" id="copy-bib">Copy</button>
+<pre id="bib-text">@article{jang2026brad,
+  title   = {Interpretable multimodal retrieval augmented diagnosis for breast
+             ultrasound with multinational clinical validation and reader study},
+  author  = {Jang, Han and An, Subin and Jung, Sunghyun and Ji, Hye and
+             Kim, Miran and Lee, Soochahn and Choi, Kyu Sung and Ha, Su Min},
+  journal = {npj Digital Medicine},
+  year    = {2026},
+  doi     = {10.1038/s41746-026-03272-3}
+}</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Figures and tables are adapted from Jang, An <i>et al.</i>, <i>npj Digital Medicine</i> (2026), published under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a>.</p>
+    <p>Seoul National University Hospital · Kookmin University</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Enlarged figure"><img alt=""></div>
+
+<script>
+  // Results tabs
+  document.querySelectorAll('.tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+      document.querySelectorAll('.panel').forEach(function (p) { p.hidden = true; });
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(tab.dataset.panel).hidden = false;
+    });
+  });
+
+  // Reader accuracy bars (Table 7)
+  var readers = [
+    { name: 'Senior breast', exp: '5 yr', v: [54.0, 54.0, 75.0] },
+    { name: 'Junior breast', exp: '4 yr', v: [51.0, 51.0, 71.0] },
+    { name: 'Board-certified', exp: '4 yr', v: [51.0, 46.0, 76.0] },
+    { name: 'PGY-2 resident', exp: '2 yr', v: [47.0, 42.0, 56.0] },
+    { name: 'AI standalone', exp: 'MLLM vs B-RAD', v: [null, 46.0, 99.0] }
+  ];
+  var colors = ['c-base', 'c-mllm', 'c-brad'];
+  var host = document.getElementById('acc-bars');
+  readers.forEach(function (r) {
+    var html = '<div class="reader"><div class="name">' + r.name + ' <span>(' + r.exp + ')</span></div>';
+    r.v.forEach(function (val, i) {
+      if (val === null) return;
+      html += '<div class="bar-row"><div class="bar"><div class="' + colors[i] + '" style="width:' + val + '%"></div></div><div class="v">' + val.toFixed(1) + '</div></div>';
+    });
+    host.insertAdjacentHTML('beforeend', html + '</div>');
+  });
+
+  // Interactive demo (Fig. 1): scale the fixed 1296x810 stage to the column width, play only while visible
+  (function () {
+    var wrap = document.getElementById('demo-wrap');
+    var frame = document.getElementById('demo-frame');
+    function fit() { frame.style.transform = 'scale(' + Math.min(1, wrap.clientWidth / 1296) + ')'; }
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(wrap);
+    fit();
+    var shown = false;
+    function send() { if (frame.contentWindow) frame.contentWindow.postMessage(shown ? 'brad-demo:visible' : 'brad-demo:hidden', '*'); }
+    frame.addEventListener('load', send);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        shown = entries[0].isIntersecting;
+        send();
+      }, { threshold: 0.35 }).observe(wrap);
+    } else { shown = true; }
+  })();
+
+  // Lightbox
+  var lb = document.getElementById('lightbox');
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('click', function () {
+      lb.querySelector('img').src = img.src;
+      lb.querySelector('img').alt = img.alt;
+      lb.classList.add('open');
+    });
+  });
+  lb.addEventListener('click', function () { lb.classList.remove('open'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lb.classList.remove('open'); });
+
+  // Copy BibTeX
+  document.getElementById('copy-bib').addEventListener('click', function () {
+    var btn = this;
+    navigator.clipboard.writeText(document.getElementById('bib-text').innerText).then(function () {
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+    });
+  });
+</script>
+</body>
+</html>
